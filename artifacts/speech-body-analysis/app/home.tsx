@@ -14,7 +14,7 @@ export default function HomeScreen() {
   return (
     <Screen contentStyle={styles.content}>
       <Header
-        title="Good morning, Alex"
+        title="Good morning, Hifza"
         subtitle="Ready to sharpen your presence?"
         action={
           <Pressable onPress={() => router.push('/settings')} style={styles.profileButton}>
