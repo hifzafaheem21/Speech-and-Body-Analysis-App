@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "Speech & Body Language Analysis",
+    "slug": "speech-body-analysis",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/speech-coach-icon.png",
+    "scheme": "speech-body-analysis",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/speech-coach-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F172A"
+    },
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {},
+    "web": {
+      "favicon": "./assets/images/speech-coach-icon.png"
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "origin": "https://replit.com/"
+        }
+      ],
+      "expo-font",
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

@@ -1,0 +1,24 @@
+kind = "mobile"
+previewPath = "/"
+title = "Speech & Body Language Analysis"
+description = "A mobile coaching app that records or uploads speech and video, sends it for AI analysis, and presents actionable feedback on confidence, eye contact, speech rate, posture, gestures, and overall performance."
+version = "1.0.0"
+id = "artifacts/speech-body-analysis"
+router = "expo-domain"
+
+[[services]]
+name = "expo"
+ensurePreviewReachable = "/status"
+paths = [ "/" ]
+localPort = 21848
+
+[services.development]
+run = "pnpm --filter @workspace/speech-body-analysis run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/speech-body-analysis", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/speech-body-analysis", "run", "serve" ]
+
+[services.env]
+PORT = "21848"
+BASE_PATH = "/"

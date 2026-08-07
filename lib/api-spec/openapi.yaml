@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: analysis
+    description: Speech and body language analysis
 paths:
   /healthz:
     get:
@@ -24,6 +26,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /analyze:
+    post:
+      operationId: analyzePresentation
+      tags: [analysis]
+      summary: Analyze a speech or video presentation
+      description: Accepts presentation metadata and returns coaching metrics.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyzeRequest"
+      responses:
+        "200":
+          description: Analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisResult"
+        "400":
+          description: Invalid analysis request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +60,79 @@ components:
           type: string
       required:
         - status
+    AnalyzeRequest:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [speech, video]
+        sourceName:
+          type: string
+        sourceUri:
+          type: string
+        durationSeconds:
+          type: number
+      required:
+        - mode
+        - sourceName
+    Metric:
+      type: object
+      properties:
+        score:
+          type: number
+        label:
+          type: string
+        detail:
+          type: string
+      required:
+        - score
+        - label
+        - detail
+    AnalysisResult:
+      type: object
+      properties:
+        id:
+          type: string
+        createdAt:
+          type: string
+        sourceName:
+          type: string
+        mode:
+          type: string
+          enum: [speech, video]
+        overallScore:
+          type: number
+        confidence:
+          $ref: "#/components/schemas/Metric"
+        eyeContact:
+          $ref: "#/components/schemas/Metric"
+        speechRate:
+          $ref: "#/components/schemas/Metric"
+        bodyPosture:
+          $ref: "#/components/schemas/Metric"
+        handGestures:
+          $ref: "#/components/schemas/Metric"
+        suggestions:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - createdAt
+        - sourceName
+        - mode
+        - overallScore
+        - confidence
+        - eyeContact
+        - speechRate
+        - bodyPosture
+        - handGestures
+        - suggestions
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
 
