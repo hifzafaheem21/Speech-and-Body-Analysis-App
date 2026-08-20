@@ -11,6 +11,7 @@ export default function AnalysisSelectionScreen() {
   const colors = useColors();
   const router = useRouter();
   const [mode, setMode] = useState<Mode>('speech');
+  const [consentAccepted, setConsentAccepted] = useState(false);
   return (
     <Screen contentStyle={styles.content}>
       <Header title="New analysis" subtitle="What would you like to improve?" onBack={() => router.back()} />
@@ -38,8 +39,21 @@ export default function AnalysisSelectionScreen() {
           );
         })}
       </View>
+      <Pressable
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked: consentAccepted }}
+        onPress={() => setConsentAccepted((accepted) => !accepted)}
+        style={styles.consentRow}
+      >
+        <View style={[styles.checkbox, { borderColor: consentAccepted ? colors.primary : colors.mutedForeground, backgroundColor: consentAccepted ? colors.primary : 'transparent' }]}>
+          {consentAccepted ? <Feather name="check" size={15} color={colors.primaryForeground} /> : null}
+        </View>
+        <Text style={[styles.consentText, { color: colors.foreground }]}>
+          I consent to my speech and body language being analyzed by this app and its third-party APIs.
+        </Text>
+      </Pressable>
       <View style={styles.bottom}>
-        <PrimaryButton label="Continue" icon="arrow-right" onPress={() => router.push({ pathname: '/record', params: { mode } })} />
+        <PrimaryButton label="Continue" icon="arrow-right" disabled={!consentAccepted} onPress={() => router.push({ pathname: '/record', params: { mode } })} />
         <Text style={[styles.privacy, { color: colors.mutedForeground }]}>Your recordings stay private and are only used to generate your feedback.</Text>
       </View>
     </Screen>
@@ -60,4 +74,7 @@ const styles = StyleSheet.create({
   radioDot: { width: 10, height: 10, borderRadius: 5 },
   bottom: { marginTop: 'auto', paddingTop: 48 },
   privacy: { fontFamily: 'Inter_400Regular', fontSize: 11, textAlign: 'center', lineHeight: 17, marginTop: 14, paddingHorizontal: 22 },
+  consentRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 11, marginTop: 25 },
+  checkbox: { width: 22, height: 22, borderRadius: 7, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center', marginTop: 1 },
+  consentText: { flex: 1, fontFamily: 'Inter_500Medium', fontSize: 12, lineHeight: 18 },
 });

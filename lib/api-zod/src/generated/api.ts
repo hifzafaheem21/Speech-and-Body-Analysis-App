@@ -22,10 +22,14 @@ export const HealthCheckResponse = zod.object({
  * @summary Analyze a speech or video presentation
  */
 export const AnalyzePresentationBody = zod.object({
+  "sessionId": zod.string(),
+  "consentAccepted": zod.boolean(),
   "mode": zod.enum(['speech', 'video']),
   "sourceName": zod.string(),
   "sourceUri": zod.string().optional(),
-  "durationSeconds": zod.number().optional()
+  "durationSeconds": zod.number().optional(),
+  "rawVideoPath": zod.string().optional(),
+  "extractedAudioPath": zod.string().optional()
 })
 
 export const AnalyzePresentationResponse = zod.object({
@@ -61,5 +65,16 @@ export const AnalyzePresentationResponse = zod.object({
 }),
   "suggestions": zod.array(zod.string())
 })
+
+
+/**
+ * Removes the analysis result and any retained raw media for a session.
+ * @summary Delete all analysis data for a session
+ */
+export const DeleteAnalysisSessionParams = zod.object({
+  "sessionId": zod.coerce.string()
+})
+
+export const DeleteAnalysisSessionResponse = zod.void()
 
 

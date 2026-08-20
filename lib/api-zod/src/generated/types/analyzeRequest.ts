@@ -8,8 +8,12 @@
 import type { AnalyzeRequestMode } from './analyzeRequestMode';
 
 export interface AnalyzeRequest {
+  sessionId: string;
+  consentAccepted: boolean;
   mode: AnalyzeRequestMode;
   sourceName: string;
   sourceUri?: string;
   durationSeconds?: number;
+  rawVideoPath?: string;
+  extractedAudioPath?: string;
 }

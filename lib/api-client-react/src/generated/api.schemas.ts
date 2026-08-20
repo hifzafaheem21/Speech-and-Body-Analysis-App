@@ -18,10 +18,14 @@ export const AnalyzeRequestMode = {
 } as const;
 
 export interface AnalyzeRequest {
+  sessionId: string;
+  consentAccepted: boolean;
   mode: AnalyzeRequestMode;
   sourceName: string;
   sourceUri?: string;
   durationSeconds?: number;
+  rawVideoPath?: string;
+  extractedAudioPath?: string;
 }
 
 export interface Metric {

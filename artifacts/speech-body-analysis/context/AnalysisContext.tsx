@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   analyzePresentation,
+  deleteAnalysisSession,
   type AnalysisResult,
   type AnalyzeRequest,
   type Metric,
@@ -17,6 +18,7 @@ type AnalysisContextValue = {
   runAnalysis: (request: AnalyzeRequest) => Promise<void>;
   selectAnalysis: (analysis: AnalysisResult) => void;
   clearHistory: () => Promise<void>;
+  deleteSession: (analysis: AnalysisResult) => Promise<void>;
 };
 
 const AnalysisContext = createContext<AnalysisContextValue | null>(null);
@@ -30,6 +32,7 @@ const metric = (score: number, label: string, detail: string): Metric => ({
 function mockAnalysis(request: AnalyzeRequest): AnalysisResult {
   const videoBoost = request.mode === 'video' ? 2 : 0;
   return {
+    sessionId: request.sessionId,
     id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     createdAt: new Date().toISOString(),
     sourceName: request.sourceName,
@@ -89,6 +92,16 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const deleteSession = async (analysis: AnalysisResult) => {
+    await deleteAnalysisSession(analysis.sessionId);
+    setHistory((previous) => {
+      const next = previous.filter((item) => item.sessionId !== analysis.sessionId);
+      AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(next)).catch(() => undefined);
+      return next;
+    });
+    setCurrentAnalysis((current) => (current?.sessionId === analysis.sessionId ? null : current));
+  };
+
   const value = useMemo(
     () => ({
       history,
@@ -96,6 +109,7 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
       isAnalyzing,
       error,
       runAnalysis,
+      deleteSession,
       selectAnalysis: setCurrentAnalysis,
       clearHistory: async () => {
         await AsyncStorage.removeItem(HISTORY_KEY);

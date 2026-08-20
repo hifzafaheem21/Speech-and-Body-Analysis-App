@@ -1,0 +1,15 @@
+I'm building a Flutter + FastAPI application called "Speech & Body Language Analyzer" that lets a user upload a video, then analyzes their speech/voice and body language using third-party APIs, returning results across Speech Analysis, Voice Analysis, Body Language, and AI Recommendations sections.
+
+I need to implement privacy/security controls based on the Digital Identity Rights Framework (DIRF), since this app processes biometric and behavioral identity data (voice, body language). Please implement the following in my codebase:
+
+Consent screen (Domain 1 — Identity Consent): Before a user can upload a video, show a consent screen/dialog with a checkbox: "I consent to my speech and body language being analyzed by this app and its third-party APIs." Block the upload flow until this is checked.
+Data control / deletion option (Domain 2 — Behavioral Data Ownership): On the Analysis Results screen, add a "Delete my data" button that removes the uploaded video, extracted audio, and stored analysis results for that session from the backend.
+Data retention limit (Domain 4 — Voice, Face & Personality Safeguards): In the FastAPI backend, after a video is sent to the third-party analysis API(s) and results are returned, delete the raw video/audio file from server storage (don't keep it longer than needed to complete analysis). Add a config flag for retention period if some caching is needed.
+Audit logging (Domain 5 — Digital Identity Traceability): In the backend, log each analysis event with: timestamp, a session/user identifier, which third-party API endpoint was called, and a status (success/failure) — no raw biometric content in the log, just metadata.
+Encryption in transit: Confirm/enforce that video uploads to the backend and calls to third-party analysis APIs use HTTPS.
+
+Please show me the specific files and code changes needed for both the Flutter frontend and FastAPI backend to implement points 1–4, keeping the changes minimal and consistent with my existing project structure.
+
+Want me to adjust this (e.g., add your actual API names, file structure, or trim it down for a specific part first)?
+
+

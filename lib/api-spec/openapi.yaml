@@ -51,6 +51,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /analyze/{sessionId}:
+    delete:
+      operationId: deleteAnalysisSession
+      tags: [analysis]
+      summary: Delete all analysis data for a session
+      description: Removes the analysis result and any retained raw media for a session.
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Analysis data deleted
+        "404":
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -63,6 +84,10 @@ components:
     AnalyzeRequest:
       type: object
       properties:
+        sessionId:
+          type: string
+        consentAccepted:
+          type: boolean
         mode:
           type: string
           enum: [speech, video]
@@ -72,7 +97,13 @@ components:
           type: string
         durationSeconds:
           type: number
+        rawVideoPath:
+          type: string
+        extractedAudioPath:
+          type: string
       required:
+        - sessionId
+        - consentAccepted
         - mode
         - sourceName
     Metric:
@@ -91,6 +122,8 @@ components:
     AnalysisResult:
       type: object
       properties:
+        sessionId:
+          type: string
         id:
           type: string
         createdAt:
@@ -117,6 +150,7 @@ components:
           items:
             type: string
       required:
+        - sessionId
         - id
         - createdAt
         - sourceName

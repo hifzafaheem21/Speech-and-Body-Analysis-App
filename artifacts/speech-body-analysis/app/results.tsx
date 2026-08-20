@@ -9,7 +9,7 @@ import { useColors } from '@/hooks/useColors';
 export default function ResultsScreen() {
   const colors = useColors();
   const router = useRouter();
-  const { currentAnalysis } = useAnalysis();
+  const { currentAnalysis, deleteSession } = useAnalysis();
   if (!currentAnalysis) {
     return <Screen contentStyle={styles.content}><Header title="Your results" onBack={() => router.replace('/home')} /><Text style={[styles.empty, { color: colors.mutedForeground }]}>Complete an analysis to see your coaching notes.</Text></Screen>;
   }
@@ -20,6 +20,14 @@ export default function ResultsScreen() {
     ['Body posture', currentAnalysis.bodyPosture],
     ['Hand gestures', currentAnalysis.handGestures],
   ] as const;
+  const handleDelete = async () => {
+    try {
+      await deleteSession(currentAnalysis);
+      router.replace('/home');
+    } catch {
+      // Keep the result visible if a remote delete is temporarily unavailable.
+    }
+  };
   return (
     <Screen contentStyle={styles.content}>
       <Header title="Your results" subtitle={currentAnalysis.sourceName} onBack={() => router.replace('/home')} action={<Pressable onPress={() => router.push('/analyze')}><Feather name="plus" size={22} color={colors.foreground} /></Pressable>} />
@@ -51,6 +59,10 @@ export default function ResultsScreen() {
         <Text style={[styles.practiceText, { color: colors.primary }]}>Practice another sample</Text>
         <Feather name="arrow-right" size={16} color={colors.primary} />
       </Pressable>
+      <Pressable accessibilityRole="button" onPress={handleDelete} style={styles.deleteButton}>
+        <Feather name="trash-2" size={15} color={colors.destructive} />
+        <Text style={[styles.deleteText, { color: colors.destructive }]}>Delete my data</Text>
+      </Pressable>
     </Screen>
   );
 }
@@ -74,4 +86,6 @@ const styles = StyleSheet.create({
   practiceLink: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 7, marginTop: 23 },
   practiceText: { fontFamily: 'Inter_700Bold', fontSize: 13 },
   empty: { fontFamily: 'Inter_400Regular', fontSize: 14, textAlign: 'center', marginTop: 100 },
+  deleteButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7, marginTop: 25, paddingVertical: 10 },
+  deleteText: { fontFamily: 'Inter_600SemiBold', fontSize: 12 },
 });

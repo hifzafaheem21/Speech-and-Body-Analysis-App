@@ -203,3 +203,75 @@ export const useAnalyzePresentation = <TError = ErrorType<ErrorResponse>,
       return useMutation(getAnalyzePresentationMutationOptions(options));
     }
 
+export const getDeleteAnalysisSessionUrl = (sessionId: string,) => {
+
+
+
+
+  return `/api/analyze/${sessionId}`
+}
+
+/**
+ * Removes the analysis result and any retained raw media for a session.
+ * @summary Delete all analysis data for a session
+ */
+export const deleteAnalysisSession = async (sessionId: string, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteAnalysisSessionUrl(sessionId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteAnalysisSessionMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAnalysisSession>>, TError,{sessionId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAnalysisSession>>, TError,{sessionId: string}, TContext> => {
+
+const mutationKey = ['deleteAnalysisSession'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAnalysisSession>>, {sessionId: string}> = (props) => {
+          const {sessionId} = props ?? {};
+
+          return  deleteAnalysisSession(sessionId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAnalysisSessionMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAnalysisSession>>>
+
+    export type DeleteAnalysisSessionMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Delete all analysis data for a session
+ */
+export const useDeleteAnalysisSession = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAnalysisSession>>, TError,{sessionId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAnalysisSession>>,
+        TError,
+        {sessionId: string},
+        TContext
+      > => {
+      return useMutation(getDeleteAnalysisSessionMutationOptions(options));
+    }
+

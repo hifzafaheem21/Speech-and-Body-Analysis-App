@@ -1,7 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { Header, PrimaryButton, Screen } from '@/components/AppUI';
 import { useAnalysis } from '@/context/AnalysisContext';
@@ -14,6 +14,7 @@ export default function RecordingScreen() {
   const { runAnalysis } = useAnalysis();
   const isVideo = mode === 'video';
   const [selectedName, setSelectedName] = useState<string | null>(null);
+  const [selectedUri, setSelectedUri] = useState<string | null>(null);
   const [recording, setRecording] = useState(false);
 
   useEffect(() => {
@@ -24,11 +25,20 @@ export default function RecordingScreen() {
 
   const pickVideo = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['videos'], quality: 0.7 });
-    if (!result.canceled && result.assets[0]) setSelectedName(result.assets[0].fileName ?? 'presentation-video.mp4');
+    if (!result.canceled && result.assets[0]) {
+      setSelectedName(result.assets[0].fileName ?? 'presentation-video.mp4');
+      setSelectedUri(result.assets[0].uri);
+    }
   };
 
   const startAnalysis = () => {
-    void runAnalysis({ mode: isVideo ? 'video' : 'speech', sourceName: selectedName ?? (isVideo ? 'Camera presentation' : 'Voice practice') });
+    void runAnalysis({
+      sessionId: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      consentAccepted: true,
+      mode: isVideo ? 'video' : 'speech',
+      sourceName: selectedName ?? (isVideo ? 'Camera presentation' : 'Voice practice'),
+      sourceUri: selectedUri ?? undefined,
+    });
     router.replace('/loading');
   };
 
@@ -47,7 +57,7 @@ export default function RecordingScreen() {
         {isVideo ? (
           <>
             <PrimaryButton label="Choose video" icon="upload" onPress={pickVideo} />
-            <Pressable onPress={() => setSelectedName('Camera presentation')} style={[styles.secondaryAction, { borderColor: colors.border }]}>
+            <Pressable onPress={() => { setSelectedName('Camera presentation'); setSelectedUri(null); }} style={[styles.secondaryAction, { borderColor: colors.border }]}>
               <Feather name="camera" size={18} color={colors.primary} />
               <Text style={[styles.secondaryActionText, { color: colors.foreground }]}>Use camera</Text>
             </Pressable>
